@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#142325"><title>守夜人 · 四境决战版</title><link rel="icon" href="data:,">
-  <script type="module" crossorigin src="./assets/index-D5F4bgch.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-SD9EMO78.css">
+<meta name="theme-color" content="#142325"><title>守夜人 · 掌上守夜版</title><link rel="icon" href="data:,">
+  <script type="module" crossorigin src="./assets/index-4yAY58Dt.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-C7fggs0j.css">
 </head>
 <body>
 <main>
@@ -15,7 +15,7 @@
       <div id="arena-frame" aria-hidden="true"></div>
     </div>
     <header class="hud">
-      <div class="field-brand"><h1>守夜人</h1><div class="brand-line"><strong id="map-name">青瓦镇</strong><span id="build-version">四境决战版</span></div></div>
+      <div class="field-brand"><h1>守夜人</h1><div class="brand-line"><strong id="map-name">青瓦镇</strong><span id="build-version">掌上守夜版</span></div></div>
       <section class="strip" aria-label="战斗状态">
         <div><span class="label">波次</span><strong id="wave">1 / 10</strong></div>
         <div class="lamp-gauge"><span class="label" title="怪物到达出口会损耗镇灯，镇灯熄灭就会失守。">镇灯</span><strong id="life"></strong></div>
@@ -29,8 +29,8 @@
         <button id="menu" type="button" popovertarget="game-menu" aria-label="游戏菜单" title="游戏菜单">☰</button>
       </div>
     </header>
-    <div class="battle-notice">
-      <div class="field-notices">
+    <div class="battle-notice" id="battle-notice">
+      <div class="field-notices" id="field-notices">
         <ul id="entrance-alert" aria-label="新入口及增援预告" hidden></ul>
         <div id="incoming" hidden></div>
         <p id="battle-aid-status" role="status" hidden></p>
@@ -53,6 +53,7 @@
       </section>
       </div>
     </div>
+    <div id="side-events">
     <section id="battle-incident" aria-labelledby="incident-title" hidden>
       <div class="incident-heading"><i id="incident-icon" aria-hidden="true"></i><strong id="incident-title" aria-live="polite"></strong><span id="incident-clock"></span></div>
       <progress id="incident-timer" max="100" value="100" aria-label="事件剩余时间"></progress>
@@ -67,6 +68,7 @@
       <div class="incident-heading"><strong id="field-support-title">协防战令</strong><span id="support-clock"></span></div>
       <div class="incident-actions" id="support-choices" role="group" aria-label="调度协防援助"></div>
     </section>
+    </div>
     <section id="castle" aria-label="塔位指挥"></section>
     <div id="build-guide" class="guide-tip" hidden>
       <button type="button" data-action="guide-pad">点这里建塔</button><button type="button" class="guide-skip" data-action="skip-guide">跳过引导</button>
