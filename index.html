@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#142325"><title>守夜人 · 望灯决战版</title><link rel="icon" href="data:,">
+  <script type="module" crossorigin src="./assets/index-DQEXg8jv.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DjN5eDvf.css">
+</head>
+<body>
+<main>
+<div class="layout">
+  <div class="field">
+    <div class="canvas-wrap">
+      <canvas id="board" tabindex="0" aria-label="战场。点十字地基建塔，点塔升级，点道路调动守灯人。也可以用方向键选塔位，按回车打开。"></canvas>
+      <div id="arena-frame" aria-hidden="true"></div>
+    </div>
+    <header class="hud">
+      <div class="field-brand"><h1>守夜人</h1><div class="brand-line"><strong id="map-name">青瓦镇</strong><span id="build-version">望灯决战版</span></div></div>
+      <section class="strip" aria-label="战斗状态">
+        <div><span class="label">波次</span><strong id="wave">1 / 10</strong></div>
+        <div class="lamp-gauge"><span class="label" title="怪物到达出口会损耗镇灯，镇灯熄灭就会失守。">镇灯</span><strong id="life"></strong></div>
+        <div class="wallet"><span class="label">金币</span><span class="wallet-value"><i aria-hidden="true"></i><strong class="coin" id="gold"></strong></span></div>
+        <div><span class="label" id="hero-name">守夜人</span><strong id="hero-hp"></strong></div>
+      </section>
+      <div class="playback">
+        <button id="pause" type="button" aria-pressed="false" title="空格 · 暂停或继续">暂停</button>
+        <button id="speed" type="button" aria-label="切换战斗速度">1×</button>
+        <button id="fullscreen" type="button" aria-label="进入全屏" title="全屏">⛶</button>
+        <button id="menu" type="button" popovertarget="game-menu" aria-label="游戏菜单" title="游戏菜单">☰</button>
+      </div>
+    </header>
+    <div class="battle-notice">
+      <div class="field-notices">
+        <ul id="entrance-alert" aria-label="新入口及增援预告" hidden></ul>
+        <div id="incoming" hidden></div>
+        <p id="battle-aid-status" role="status" hidden></p>
+      </div>
+      <section id="boss-intent" aria-label="首领状态" hidden>
+        <div class="boss-heading"><strong id="boss-name"></strong><span id="boss-hp"></span></div>
+        <div class="boss-health-track"><progress id="boss-meter" max="100" value="100" aria-label="首领生命"></progress><span id="boss-gates" aria-hidden="true"></span></div>
+        <strong id="boss-cast"></strong><progress id="boss-timer" max="100" value="100" aria-label="首领施法剩余时间" hidden></progress>
+        <p id="boss-distance"></p><p id="boss-counter"></p><p id="boss-focus"></p><button id="boss-action" type="button" hidden></button>
+      </section>
+    </div>
+    <section id="battle-incident" aria-labelledby="incident-title" hidden>
+      <div class="incident-heading"><i id="incident-icon" aria-hidden="true"></i><strong id="incident-title" aria-live="polite"></strong><span id="incident-clock"></span></div>
+      <progress id="incident-timer" max="100" value="100" aria-label="事件剩余时间"></progress>
+      <p id="incident-note" aria-live="polite"></p>
+      <div class="incident-actions" role="group" aria-label="事件选项">
+        <button id="incident-primary" type="button"><strong></strong><small></small></button>
+        <button id="incident-alternative" type="button" hidden><strong></strong><small></small></button>
+        <button id="incident-third" type="button" hidden><strong></strong><small></small></button>
+      </div>
+    </section>
+    <section id="field-support" aria-labelledby="field-support-title" hidden>
+      <div class="incident-heading"><strong id="field-support-title">协防战令</strong><span id="support-clock"></span></div>
+      <div class="incident-actions" id="support-choices" role="group" aria-label="调度协防援助"></div>
+    </section>
+    <section id="castle" aria-label="塔位指挥"></section>
+    <div id="build-guide" class="guide-tip" hidden>
+      <button type="button" data-action="guide-pad">点这里建塔</button><button type="button" class="guide-skip" data-action="skip-guide">跳过引导</button>
+    </div>
+    <button id="fixture-cue" type="button" data-action="fixture-cue" hidden></button>
+    <p id="map-prompt" hidden></p><p id="chime" aria-live="polite" hidden></p>
+    <div class="battle-dock" aria-label="战斗操作">
+      <div class="dock-actions">
+        <button id="zone" type="button" aria-label="切换战场视野" title="放大后可拖动地图">放大</button>
+        <button id="brief-toggle" type="button" popovertarget="situation">战况</button>
+        <button id="cancel-aim" type="button" hidden>取消</button>
+      </div>
+      <p id="radio" role="status" aria-live="polite"></p>
+      <div class="dock-primary">
+        <div id="starter"></div>
+        <div class="command-bar" id="command-bar" hidden><div id="defense-pick" hidden></div><div id="battle-plan-choices" role="group" aria-label="本波战备"></div><button id="lane-brief" type="button" data-action="show-lane-pad" hidden></button><p id="opening-preview" hidden></p><button id="quick-order" type="button"></button></div>
+        <div id="skill-guide" class="guide-tip" hidden>
+          <p id="skill-guide-copy" role="status">点「提灯」，再点怪物脚下减速。</p><button type="button" class="guide-skip" data-action="skip-guide">跳过引导</button>
+        </div>
+        <div class="skills" id="skills" aria-label="主动技能"></div>
+      </div>
+    </div>
+  </div>
+  <aside id="phase-overlay" aria-labelledby="brief-title">
+    <div class="phase-card">
+      <p class="label" id="brief-label">出巡前</p>
+      <h2 id="brief-title">选择角色</h2>
+      <p id="phase-copy"></p>
+      <p id="keeper-unlock" class="keeper-unlock" role="status" hidden></p>
+      <section id="decisions"></section>
+    </div>
+  </aside>
+</div>
+<section id="situation" class="drawer" popover="auto" aria-labelledby="situation-title">
+  <div class="drawer-heading"><h2 id="situation-title">战况</h2><button type="button" class="drawer-close" aria-label="关闭战况" popovertarget="situation" popovertargetaction="hide">×</button></div>
+  <div class="situation-meta"><strong id="watch">一更</strong><span id="field-note"></span><span id="remaining"></span></div>
+  <div id="wave-progress" hidden aria-label="本波出怪进度"><i></i></div>
+  <section id="defense-board" aria-label="路线协防" hidden></section>
+  <section id="map-mechanic" aria-label="地图机关提示" hidden><strong id="mechanic-title"></strong><span id="mechanic-detail"></span><button id="stone-order" type="button" hidden>守夜人净碑 <kbd>V</kbd></button></section>
+  <section id="pressure" class="pressure" aria-label="阵眼" hidden>
+    <div><strong id="pressure-title"></strong><small id="pressure-detail"></small><div class="pressure-meter" id="pressure-meter" hidden><i></i></div></div>
+    <button id="rift-hero" type="button" title="F：派守夜人到阵眼"><span id="rift-order">守夜人破阵</span> <kbd>F</kbd></button>
+    <button id="rift-focus" type="button" title="G：射程内的攻击塔集火阵眼">塔群集火 <kbd>G</kbd></button>
+  </section>
+  <section id="fixtures" aria-label="地图机关"></section>
+  <div class="drawer-actions"><button id="hero-mode" type="button" aria-pressed="false">调动守夜人 <kbd>H</kbd></button><button id="retreat" type="button" title="J · 敌人离开镇灯附近后恢复生命">回镇灯 <kbd>J</kbd></button></div>
+  <section class="war-plan" aria-label="守备计划">
+    <div id="watch-steps" aria-label="五更进度"></div>
+    <p id="brief-copy"></p><p id="map-brief" hidden></p><div id="forecast" aria-label="敌群构成"></div><p id="counter-note" hidden></p>
+    <p id="opening-buff" hidden></p><p id="patrol" hidden></p><div id="patrol-options"></div><div id="keeper-plans"></div><div id="preparations"></div>
+  </section>
+  <details class="advisor-details"><summary>副官布防</summary><section id="advisor"></section></details>
+</section>
+<section id="game-menu" class="drawer" popover="auto" aria-labelledby="game-menu-title">
+  <div class="drawer-heading"><h2 id="game-menu-title">守夜人</h2><button type="button" class="drawer-close" aria-label="关闭菜单" popovertarget="game-menu" popovertargetaction="hide">×</button></div>
+  <div class="menu-actions">
+    <button id="sound" type="button" aria-pressed="true">音效开</button><button id="help" type="button">操作手册</button><button id="report" type="button">守夜战报</button>
+    <button type="button" data-action="roster">角色名册</button><button id="guide-menu" type="button" data-action="toggle-guide">跳过新手引导</button>
+    <button id="retry" type="button">重开本波</button><button id="restart" type="button">重开整局</button>
+  </div>
+</section>
+</main>
+<dialog id="keeper-roster" aria-labelledby="keeper-roster-title">
+  <form method="dialog"><button type="submit" class="drawer-close" aria-label="关闭名册">×</button></form>
+  <h2 id="keeper-roster-title">角色名册</h2>
+  <p id="keeper-progress"></p><button id="keeper-angle" type="button" aria-pressed="true">查看角色近照</button>
+  <div id="keeper-list"></div>
+</dialog>
+<dialog id="opening-draw" aria-labelledby="draw-title">
+  <div class="draw-shell">
+    <canvas id="draw-particles" width="1" height="1" aria-hidden="true"></canvas>
+    <h2 id="draw-title">选择开局强化</h2>
+    <p id="draw-wallet" class="wallet-value" hidden><i aria-hidden="true"></i><span>金币</span><strong id="draw-gold"></strong></p>
+    <p id="draw-copy"></p>
+    <p id="draw-enrollment" class="keeper-unlock" role="status" hidden></p>
+    <details id="draw-odds-details" hidden><summary>查看抽卡概率</summary><p id="draw-odds"></p></details>
+    <div id="draw-stage">
+      <div id="seal-stage">
+        <button id="tear-pack" type="button" aria-label="向右拖动封条或点击拆开卡包">
+          <canvas class="pack-canvas" width="568" height="328" aria-hidden="true"></canvas>
+        </button>
+      </div>
+      <div class="draw-choices" id="draw-choices" hidden></div>
+    </div>
+    <div class="draw-actions">
+      <button id="draw-open" class="primary" type="button">打开卡包</button>
+      <button id="reward-guide-skip" class="guide-skip" type="button" hidden>跳过引导</button>
+      <button id="draw-redraw" type="button" hidden>换一包</button>
+      <button id="draw-skip" type="button">跳过强化</button>
+      <label hidden><input id="draw-full-motion" type="checkbox">完整动画</label>
+    </div>
+  </div>
+</dialog>
+<dialog id="battle-report">
+  <h2>守夜战报</h2>
+  <div id="report-content"></div>
+  <form method="dialog"><button class="primary">返回守备</button></form>
+</dialog>
+<dialog id="manual" aria-labelledby="manual-title">
+  <h2 id="manual-title">怎么玩</h2>
+  <p>建塔拦住怪物。怪物到达出口会损耗镇灯，镇灯熄灭就会失守。</p>
+  <ol>
+    <li>选一位守灯人，拆开卡包选一张强化。开局强化在本局生效，也可以跳过。</li>
+    <li>点「布阵并开战」，用金币建好三座推荐塔并开始第 1 波。也可以点地图上的十字地基自己建塔，准备好再开战。</li>
+    <li>塔楼会自动攻击。点已有塔可以升级，点道路可以调动守灯人。战斗中也可以点底部技能支援塔楼。</li>
+  </ol>
+  <details>
+    <summary>键盘操作</summary>
+    <p>按空格开战、暂停或继续。按 X 执行屏幕上的战斗指令。用 1、2 选战备，翻牌后用 1、2、3 选牌。</p>
+    <p>Q 使用角色技能，W 提灯减速，E 召唤民兵，R 轰击一片区域。按 H 后点道路可调动守灯人，按 J 让角色回镇灯休整。放大后可拖动地图查看其他区域。</p>
+  </details>
+  <details>
+    <summary>塔楼、机关和首领</summary>
+    <ul>
+      <li>箭楼和火铳炮楼能对空，符箓坛擅长对付重甲。点塔可以调整优先攻击的目标。三级塔可以选一种专精。更房可设置守卫集结点。点塔楼的「更多」可以出售或移塔。</li>
+      <li>把箭楼和符箓坛建在一起可触发破甲箭，把炮楼和更房建在一起可触发火墙，炮楼搭配箭楼可触发穿云炮。</li>
+      <li>每波默认有两枚灯令。在「战况」里使用灯令开机关。青瓦镇可用连灯照破照面傀的伪装，河湾可开闸改道或用排水轮退潮，槐祠可用净魂坛拆护魂碑或敲钟打断附近的首领。</li>
+      <li>第 4、5 波在开战按钮上方点协防选项，地图会标出入口、路线和塔位。点「确认协防」后，第 5、6 波守住对应入口，第 7 波起可获得援助。机关旁出现短提示时，点提示即可使用。第 7 波起可在开战按钮上方选择自动战备。救侧路会拦一批地面怪。梦魇之主出现的波次也可以留招打断施法。槐祠第 15 波、青瓦镇第 15 和第 16 波可以预备角色侧防，侧门出现敌情时点指挥按钮或按 X。</li>
+      <li>第 5 波起，阵眼会夺取镇灯、封住塔楼或召来援军。按 F 派守灯人过去，按 G 让射程内的塔集中攻击，也可以用灯火轰击。首领施法时，尽快集火，或先用提灯照住首领再施放能命中的角色技能。</li>
+    </ul>
+  </details>
+  <form method="dialog"><button class="primary">返回守备</button></form>
+</dialog>
+</body>
+</html>
