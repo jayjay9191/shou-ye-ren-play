@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#142325"><title>守夜人 · 望灯决战版</title><link rel="icon" href="data:,">
-  <script type="module" crossorigin src="./assets/index-rtJJ_d-2.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DjN5eDvf.css">
+<meta name="theme-color" content="#142325"><title>守夜人 · 霜岭守灯版</title><link rel="icon" href="data:,">
+  <script type="module" crossorigin src="./assets/index-XNR6Lg9x.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DUBHxeXd.css">
 </head>
 <body>
 <main>
@@ -15,7 +15,7 @@
       <div id="arena-frame" aria-hidden="true"></div>
     </div>
     <header class="hud">
-      <div class="field-brand"><h1>守夜人</h1><div class="brand-line"><strong id="map-name">青瓦镇</strong><span id="build-version">望灯决战版</span></div></div>
+      <div class="field-brand"><h1>守夜人</h1><div class="brand-line"><strong id="map-name">青瓦镇</strong><span id="build-version">霜岭守灯版</span></div></div>
       <section class="strip" aria-label="战斗状态">
         <div><span class="label">波次</span><strong id="wave">1 / 10</strong></div>
         <div class="lamp-gauge"><span class="label" title="怪物到达出口会损耗镇灯，镇灯熄灭就会失守。">镇灯</span><strong id="life"></strong></div>
@@ -35,12 +35,23 @@
         <div id="incoming" hidden></div>
         <p id="battle-aid-status" role="status" hidden></p>
       </div>
+      <div class="threat-stack">
+        <section id="pressure" class="pressure" aria-label="阵眼" hidden>
+          <div class="pressure-copy"><strong id="pressure-title" role="status"></strong><span id="pressure-clock"></span>
+            <small id="pressure-detail"></small><div class="pressure-meter" id="pressure-meter" hidden><i></i></div>
+          </div>
+          <div class="pressure-actions">
+            <button id="rift-hero" type="button" title="F · 守灯人到场后持续破阵"><span id="rift-order">派守灯人</span> <kbd>F</kbd></button>
+            <button id="rift-focus" type="button" title="G · 射程内的塔立即转火阵眼"><span id="rift-focus-copy">塔群集火</span> <kbd>G</kbd></button>
+          </div>
+        </section>
       <section id="boss-intent" aria-label="首领状态" hidden>
         <div class="boss-heading"><strong id="boss-name"></strong><span id="boss-hp"></span></div>
         <div class="boss-health-track"><progress id="boss-meter" max="100" value="100" aria-label="首领生命"></progress><span id="boss-gates" aria-hidden="true"></span></div>
         <strong id="boss-cast"></strong><progress id="boss-timer" max="100" value="100" aria-label="首领施法剩余时间" hidden></progress>
         <p id="boss-distance"></p><p id="boss-counter"></p><p id="boss-focus"></p><button id="boss-action" type="button" hidden></button>
       </section>
+      </div>
     </div>
     <section id="battle-incident" aria-labelledby="incident-title" hidden>
       <div class="incident-heading"><i id="incident-icon" aria-hidden="true"></i><strong id="incident-title" aria-live="polite"></strong><span id="incident-clock"></span></div>
@@ -95,11 +106,7 @@
   <div id="wave-progress" hidden aria-label="本波出怪进度"><i></i></div>
   <section id="defense-board" aria-label="路线协防" hidden></section>
   <section id="map-mechanic" aria-label="地图机关提示" hidden><strong id="mechanic-title"></strong><span id="mechanic-detail"></span><button id="stone-order" type="button" hidden>守夜人净碑 <kbd>V</kbd></button></section>
-  <section id="pressure" class="pressure" aria-label="阵眼" hidden>
-    <div><strong id="pressure-title"></strong><small id="pressure-detail"></small><div class="pressure-meter" id="pressure-meter" hidden><i></i></div></div>
-    <button id="rift-hero" type="button" title="F：派守夜人到阵眼"><span id="rift-order">守夜人破阵</span> <kbd>F</kbd></button>
-    <button id="rift-focus" type="button" title="G：射程内的攻击塔集火阵眼">塔群集火 <kbd>G</kbd></button>
-  </section>
+  <p id="rift-plan-note" class="rift-plan-note" hidden></p>
   <section id="fixtures" aria-label="地图机关"></section>
   <div class="drawer-actions"><button id="hero-mode" type="button" aria-pressed="false">调动守夜人 <kbd>H</kbd></button><button id="retreat" type="button" title="J · 敌人离开镇灯附近后恢复生命">回镇灯 <kbd>J</kbd></button></div>
   <section class="war-plan" aria-label="守备计划">
